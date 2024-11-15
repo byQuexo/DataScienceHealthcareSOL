@@ -41,6 +41,10 @@
    - Pandas get_dummies for one-hot encoding: https://pandas.pydata.org/docs/reference/api/pandas.get_dummies.html
 - **Python Standard Library**:
    - Exception handling: https://docs.python.org/3/tutorial/errors.html
+- ** Transformers **:
+  - Transformers Documentation: https://huggingface.co/docs/transformers/index
+  - Tokenizer: https://huggingface.co/transformers/main_classes/tokenizer.html
+  - Trainer: https://huggingface.co/transformers/main_classes/trainer.html
 
 [1] https://pandas.pydata.org/docs/
 [2] https://pandas.pydata.org/docs/user_guide/indexing.html
