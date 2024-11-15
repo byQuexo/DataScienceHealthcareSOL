@@ -53,4 +53,5 @@
 > 
 > Dataset: [National Health and Nutrition Examination Survey (NHANES) – Vision and Eye Health Surveillance](https://healthdata.gov/dataset/National-Health-and-Nutrition-Examination-Survey-N/mbgv-hccf/about_data)
 > This dataset is sourced from [Centers for Disease Control and Prevention](https://www.cdc.gov/visionhealth/vehss/index.html).
+> Vision Classification model: https://huggingface.co/Quexoo/vision-classifier
 
