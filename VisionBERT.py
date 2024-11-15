@@ -442,12 +442,10 @@ def print_evaluation_report(metrics: Dict, label_encoder):
     print(conf_matrix)
 
 
-# Modify the main execution block to include evaluation
 if __name__ == "__main__":
     output_dir = "models/vision-classifier"
     model_path = os.path.join(output_dir, "model")
 
-    # Your existing model loading code...
     if os.path.exists(model_path):
         print("\nLoading pre-trained model...")
         try:
@@ -521,7 +519,6 @@ if __name__ == "__main__":
 
         return predictions
 
-    # Your existing prediction code...
     example_text = "Age: 40-64 years, Gender: Female, Race: White, non-Hispanic, Diabetes: No"
     predictions = predict_vision_status(example_text, model, tokenizer, label_encoder)
 
