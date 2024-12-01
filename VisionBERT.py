@@ -57,12 +57,10 @@ def create_feature_vector(df):
 
     # Initialize LabelEncoders
     le_gender = LabelEncoder()
-    le_race = LabelEncoder()
     le_risk = LabelEncoder()
 
     # Fit and transform while handling missing values
     gender_encoded = le_gender.fit(df['Gender'].unique()).transform(df['Gender'].fillna('Unknown'))
-    race_encoded = le_race.fit(df['RaceEthnicity'].unique()).transform(df['RaceEthnicity'].fillna('Unknown'))
     risk_encoded = le_risk.fit(df['RiskFactor'].unique()).transform(df['RiskFactor'].fillna('Unknown'))
 
     # Create age groups numerical representation with a default for missing values
@@ -81,7 +79,6 @@ def create_feature_vector(df):
     features = np.column_stack([
         age_encoded,
         gender_encoded,
-        race_encoded,
         risk_encoded,
         df['Sample_Size'].values  # Add sample size as a feature
     ])
@@ -166,7 +163,6 @@ def prepare_data(file_path='data/Vision_Survey_Cleaned.csv'):
         Patient Demographics:
         - Age Category: {x['Age']}
         - Gender: {x['Gender']}
-        - Race/Ethnicity: {x['RaceEthnicity']}
 
         Risk Factors:
         - {x['RiskFactor']}: {x['RiskFactorResponse']}
@@ -230,7 +226,7 @@ def prepare_data(file_path='data/Vision_Survey_Cleaned.csv'):
         cluster_samples = df[cluster_mask]['Sample_Size'].sum()
         print(f"\nCluster {i} (Total samples: {cluster_samples:,}, Weight: {cluster_weights.get(i, 0):.3f}):")
         print("Most common characteristics:")
-        for col in ['Age', 'Gender', 'RaceEthnicity', 'RiskFactor']:
+        for col in ['Age', 'Gender', 'RiskFactor']:
             values = df[col][cluster_mask].value_counts().head(3)
             samples = df[cluster_mask].groupby(col)['Sample_Size'].sum().sort_values(ascending=False).head(3)
             print(f"{col}:")
@@ -257,7 +253,7 @@ def main():
     dataset_dict, label_encoder = prepare_data()
 
     # Initialize the tokenizer
-    tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 
     # Define tokenization function within main to have access to tokenizer
     def tokenize_function(examples):
@@ -288,7 +284,7 @@ def main():
 
     # Initialize the model
     model = AutoModelForSequenceClassification.from_pretrained(
-        "bert-base-uncased",
+        "distilbert-base-uncased",
         num_labels=len(label_encoder.classes_),
         id2label={i: label for i, label in enumerate(label_encoder.classes_)},
         label2id={label: i for i, label in enumerate(label_encoder.classes_)},
@@ -335,6 +331,9 @@ def main():
     # Save the model
     print("\nSaving model...")
     trainer.save_model(output_dir=os.path.join(output_dir, "model"))
+
+    # Save the tokenizer
+    tokenizer.save_pretrained(os.path.join(output_dir, "tokenizer"))
 
     # Save the label encoder
     label_encoder_path = os.path.join(output_dir, "label_encoder.pkl")
@@ -445,11 +444,12 @@ def print_evaluation_report(metrics: Dict, label_encoder):
 if __name__ == "__main__":
     output_dir = "models/vision-classifier"
     model_path = os.path.join(output_dir, "model")
+    tokenizer_path = os.path.join(output_dir, "tokenizer")
 
     if os.path.exists(model_path):
         print("\nLoading pre-trained model...")
         try:
-            tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+            tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
             model = AutoModelForSequenceClassification.from_pretrained(model_path)
             label_encoder_path = os.path.join(output_dir, "label_encoder.pkl")
             if os.path.exists(label_encoder_path):
@@ -519,7 +519,7 @@ if __name__ == "__main__":
 
         return predictions
 
-    example_text = "Age: 40-64 years, Gender: Female, Race: White, non-Hispanic, Diabetes: No"
+    example_text = "Age: 40-64 years, Gender: Female, Diabetes: No"
     predictions = predict_vision_status(example_text, model, tokenizer, label_encoder)
 
     print(f"\nPredictions for: {example_text}")
