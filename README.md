@@ -2,7 +2,7 @@
 
 ## Building a Forecast Model for Healthcare Data
 
-### Objectives of this Notebook:
+### Objectives of this Repository:
 
 - **Data Structuring**: Organizing the healthcare dataset into a suitable format for analysis and modeling.
 - **Data Cleaning**: Handling missing values, correcting inconsistencies, and preparing the data for use.
